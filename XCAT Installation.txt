@@ -1,0 +1,81 @@
+
+
+###############################	xCAT-Installation   ###########################
+		
+						<<< Do Prerequisite Installation >>>
+						
+# vim /etc/hosts    	<<< IP address and Hostname >>>
+# vim /etc/selinux/config
+# sestatus
+# setenforce 0
+
+
+# systemctl stop firewalld
+# systemctl disable firewalld
+
+
+		<<< Install some Packages and Download Repos xcat-core, xcat-dep >>>
+		
+# yum install yum-utils 
+# wget -P /etc/yum.repos.d https://xcat.org/files/xcat/repos/yum/latest/xcat-core/xcat-core.repo
+# wget -P /etc/yum.repos.d https://xcat.org/files/xcat/repos/yum/xcat-dep/rh7/x86_64/xcat-dep.repo
+# yum install xCAT
+		 
+		 #############################
+		 
+# ll /etc/profile.d/xcat.sh
+# echo $PATH
+# . /etc/profile.d/xcat.sh
+# echo $PATH
+# lsxcatd -a
+# chdef -t site dhcpinterfaces="ens36"						<<< ADD Interface >>> 
+# chdef -t site localhost=" Master IP Address "
+# tabdump site | grep master
+# tabdump site | grep dhcpinterfaces
+# lsblk
+# dd if=/dev/sr0 of=/root/Centos IMAGE
+# copycds Centos IMAGE										<<< Copy Centos Image >>>
+# lsdef -t osimage
+# ll install Centos IMAGE
+# lsdef -t osimage Centos IMAGE
+# genimage centos7.9-x86_64-netboot-compute
+# mkdir -p /install/custom/netboot/
+# chdef -t osimage centos7.9-x86_64-netboot-compute synclists="/install/custom/netboot/compute.synclist"
+
+
+# echo "/etc/passwd -> /etc/passwd" > /install/custom/netboot/compute.synclist
+# echo "/etc/shadow -> /etc/shadow" >> /install/custom/netboot/compute.synclist
+# echo "/etc/group -> /etc/group" >> /install/custom/netboot/compute.synclist
+# echo "/etc/hosts -> /etc/hosts" >> /install/custom/netboot/compute.synclist 
+
+# lsdef -t osimage										<<< You can display all the defined osimage object >>>
+
+														<<< To assemble the final compute image use packimage as follows: >>>
+
+# packimage centos7.9-x86_64-netboot-compute			
+
+														###############################################
+														
+# mkdef -t node cn00 groups=compute,all ip=address mac=mac address netboot=xnba
+# lsdef cn00
+# chdef -t group compute provmethod=centos7.9-x86_64-netboot-compute
+# lsdef cn00
+# chdef -t site domain=xcat.in
+# cat /etc/hosts
+# makehosts
+# cat /etc/hosts
+# makenetworks
+# makedhcp -n 											<<< Configure DHCP >>>
+# makedns -n 											<<< Configure DNS >>>
+# vi /etc/resolv.conf
+				
+		search localdomain xcat.in
+		nameserver IP Address
+			  
+# nslookup cn00
+# nodeset compute osimage=centos7.9-x86_64-netboot-compute
+# systemctl restart dhcpd
+# systemctl status dhcpd
+
+
+#####################################################################
