@@ -2,9 +2,9 @@
 
 ###############################	xCAT-Installation   ###########################
 		
-						<<< Do Prerequisite Installation >>>
+			<<< Do Prerequisite Installation >>>
 						
-# vim /etc/hosts    	<<< IP address and Hostname >>>
+# vim /etc/hosts    	 <<< IP address and Hostname >>>
 # vim /etc/selinux/config
 # sestatus
 # setenforce 0
@@ -28,7 +28,7 @@
 # . /etc/profile.d/xcat.sh
 # echo $PATH
 # lsxcatd -a
-# chdef -t site dhcpinterfaces="ens36"						<<< ADD Interface >>> 
+# chdef -t site dhcpinterfaces="ens36"								<<< ADD Interface >>> 
 # chdef -t site localhost=" Master IP Address "
 # tabdump site | grep master
 # tabdump site | grep dhcpinterfaces
@@ -50,16 +50,19 @@
 
 # lsdef -t osimage										<<< You can display all the defined osimage object >>>
 
-														<<< To assemble the final compute image use packimage as follows: >>>
+											<<< To assemble the final compute image use packimage as follows: >>>
 
 # packimage centos7.9-x86_64-netboot-compute			
 
-														###############################################
+						###############################################
 														
-# mkdef -t node cn00 groups=compute,all ip=address mac=mac address netboot=xnba
+# mkdef -t node cn00 groups=compute,all ip=address mac=mac address netboot=xnba				<<compute node1>>
+# mkdef -t node cn01 groups=compute,all ip=address mac=mac address netboot=xnba				<<compute node2>>
 # lsdef cn00
+# lsdef cn01
 # chdef -t group compute provmethod=centos7.9-x86_64-netboot-compute
 # lsdef cn00
+# lsdef cn01
 # chdef -t site domain=xcat.in
 # cat /etc/hosts
 # makehosts
@@ -72,7 +75,6 @@
 		search localdomain xcat.in
 		nameserver IP Address
 			  
-# nslookup cn00
 # nodeset compute osimage=centos7.9-x86_64-netboot-compute
 # systemctl restart dhcpd
 # systemctl status dhcpd
